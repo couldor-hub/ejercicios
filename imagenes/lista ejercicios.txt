@@ -1,0 +1,13 @@
+var todosEjercicios = [
+  { nombre: "Sentadillas",      musculo: "Piernas",  gif: "imagenes/Sentadillas.gif",      reps: 15, calorias: 6 },
+  { nombre: "Sentadillas sumo", musculo: "Piernas",  gif: "imagenes/Sentadillas sumo.gif", reps: 12, calorias: 6 },
+  { nombre: "Zancadas",         musculo: "Piernas",  gif: "imagenes/Zancadas.gif",         reps: 10, calorias: 5 },
+  { nombre: "Flexiones",        musculo: "Pecho",    gif: "imagenes/Flexiones.gif",        reps: 10, calorias: 5 },
+  { nombre: "Plancha",          musculo: "Abdomen",  gif: "imagenes/Plancha.gif",          reps: 0,  calorias: 4 },
+  { nombre: "Crunch Abdominal", musculo: "Abdomen",  gif: "imagenes/Crunch Abdominal.gif", reps: 15, calorias: 4 },
+  { nombre: "Superman",         musculo: "Espalda",  gif: "imagenes/Superman.gif",         reps: 12, calorias: 4 },
+  { nombre: "Superman1",        musculo: "Espalda",  gif: "imagenes/Superman1.gif",        reps: 12, calorias: 5 },
+  { nombre: "Press hombros",    musculo: "Hombros",  gif: "imagenes/ Press hombros",       reps: 12, calorias: 5 },
+  { nombre: "Burpees",          musculo: "Cardio",   gif: "imagenes/Burpees.gif",          reps: 8,  calorias: 8 },
+  { nombre: "Jumping Jacks",    musculo: "Cardio",   gif: "imagenes/Jumping Jacks.gif",    reps: 0,  calorias: 6 }
+];
