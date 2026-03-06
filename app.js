@@ -120,11 +120,15 @@ function calcularSegundos(segundosBase) {
 
 function iniciarEntrenamiento() {
   if (!perfil) { irA('datos'); return; }
+  // Desbloquear audio en Safari con gesto del usuario
+  var musica = document.getElementById('musica');
+  musica.play().then(function() { musica.pause(); musica.currentTime = 0; }).catch(function() {});
   var num = calcularNumEjercicios();
   ejerciciosHoy = todosEjercicios.slice(0, num);
   ejercicioActual = 0;
   iniciarEjercicio(0);
 }
+
 
 function iniciarEjercicio(index) {
   entrenamientoActivo = true;   // ← CLAVE
@@ -179,7 +183,8 @@ function empezarTemporizador(segundos) {
   tiempoRestante = segundos;
   document.getElementById('contador').style.color = '#e94560';
   document.getElementById('contador').textContent = tiempoRestante;
-  document.getElementById('musica').play();
+  var musica = document.getElementById('musica');
+  musica.play().catch(function() {});
 
   clearInterval(intervalo);
   intervalo = setInterval(function() {
