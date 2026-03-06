@@ -120,14 +120,21 @@ function calcularSegundos(segundosBase) {
 
 function iniciarEntrenamiento() {
   if (!perfil) { irA('datos'); return; }
+  
   // Desbloquear audio en Safari con gesto del usuario
   var musica = document.getElementById('musica');
-  musica.play().then(function() { musica.pause(); musica.currentTime = 0; }).catch(function() {});
+  musica.load();
+  musica.play().then(function() { 
+    musica.pause(); 
+    musica.currentTime = 0; 
+  }).catch(function() {});
+
   var num = calcularNumEjercicios();
   ejerciciosHoy = todosEjercicios.slice(0, num);
   ejercicioActual = 0;
   iniciarEjercicio(0);
 }
+
 
 
 function iniciarEjercicio(index) {
@@ -342,4 +349,5 @@ if ('serviceWorker' in navigator) {
 window.onload = function() {
   if (perfil) { irA('menu'); }
 };
+
 
