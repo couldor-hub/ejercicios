@@ -340,6 +340,19 @@ function siguienteEjercicio() {
     finalizarEntrenamiento();
   }
 }
+function resetearApp() {
+  if (confirm('¿Seguro? Se borrarán todos los datos')) {
+    localStorage.clear();
+    perfil = null;
+    semanaActual = 1;
+    diasEntrenados = 0;
+    rachaActual = 0;
+    ultimoEntrenamiento = null;
+    historialPeso = [];
+    irA('inicio');
+  }
+}
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('./sw.js');
@@ -349,5 +362,6 @@ if ('serviceWorker' in navigator) {
 window.onload = function() {
   if (perfil) { irA('menu'); }
 };
+
 
 
