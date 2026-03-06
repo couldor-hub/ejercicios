@@ -8,7 +8,7 @@ var entrenamientoActivo = false;
 
 var todosEjercicios = [
   { nombre: "Sentadillas",      musculo: "Piernas",  gif: "imagenes/Sentadillas.gif",      reps: 15, segundosBase: 50, calorias: 6 },
-  { nombre: "Sentadillas sumo", musculo: "Piernas",  gif: "imagenes/Sentadillas-sumo.gif", reps: 12, segundosBase: 50, calorias: 6 },
+  { nombre: "Sentadillas sumo", musculo: "Piernas",  gif: "imagenes/Sentadillas-Sumo.gif", reps: 12, segundosBase: 50, calorias: 6 },
   { nombre: "Zancadas",         musculo: "Piernas",  gif: "imagenes/Zancadas.gif",         reps: 10, segundosBase: 45, calorias: 5 },
   { nombre: "Flexiones",        musculo: "Pecho",    gif: "imagenes/Flexiones.gif",        reps: 8,  segundosBase: 40, calorias: 5 },
   { nombre: "Plancha",          musculo: "Abdomen",  gif: "imagenes/Plancha.gif",          reps: 0,  segundosBase: 20, calorias: 4 },
@@ -342,3 +342,4 @@ if ('serviceWorker' in navigator) {
 window.onload = function() {
   if (perfil) { irA('menu'); }
 };
+
