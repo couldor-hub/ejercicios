@@ -217,7 +217,7 @@ function empezarTemporizador(segundos) {
 function iniciarPausa() {
   if (!entrenamientoActivo) return;   // ← CLAVE
   enPausa = true;
-  tiempoRestante = 40;
+  tiempoRestante = 25;
 
   document.getElementById('nombre-ejercicio').textContent = '';
   document.getElementById('musculo-ejercicio').textContent = '';
@@ -362,6 +362,7 @@ if ('serviceWorker' in navigator) {
 window.onload = function() {
   if (perfil) { irA('menu'); }
 };
+
 
 
 
