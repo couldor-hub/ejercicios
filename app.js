@@ -1,6 +1,7 @@
 var perfil = JSON.parse(localStorage.getItem('perfil')) || null;
 var semanaActual = parseInt(localStorage.getItem('semana')) || 1;
 var diasEntrenados = parseInt(localStorage.getItem('diasEntrenados')) || 0;
+var diasEntrenadosSemana = parseInt(localStorage.getItem('diasEntrenadosSemana')) || 0;
 var rachaActual = parseInt(localStorage.getItem('racha')) || 0;
 var ultimoEntrenamiento = localStorage.getItem('ultimoEntrenamiento') || null;
 var historialPeso = JSON.parse(localStorage.getItem('historialPeso')) || [];
@@ -26,7 +27,6 @@ var intervalo = null;
 var tiempoRestante = 0;
 var enPausa = false;
 
-
 function beep(frecuencia, duracion, volumen) {
   var ctx = new AudioContext();
   var o = ctx.createOscillator();
@@ -45,20 +45,24 @@ function sonidoInicio() {
   setTimeout(function() { beep(700, 0.2, 0.06); }, 300);
 }
 
-function sonidoCuenta() {
-  beep(660, 0.08, 0.05);
-}
-
-function sonidoFin() {
-  beep(350, 0.4, 0.07);
-}
+function sonidoCuenta() { beep(660, 0.08, 0.05); }
+function sonidoFin()    { beep(350, 0.4,  0.07); }
 
 function irA(id) {
-  var pantallas = document.querySelectorAll('.pantalla');
-  pantallas.forEach(function(p) { p.classList.add('oculto'); });
+  document.querySelectorAll('.pantalla').forEach(function(p) { p.classList.add('oculto'); });
   document.getElementById(id).classList.remove('oculto');
-  if (id === 'menu') { cargarMenu(); }
+  if (id === 'menu')     { cargarMenu(); }
   if (id === 'progreso') { cargarProgreso(); }
+}
+
+function guardarDatos() {
+  localStorage.setItem('semana',                String(semanaActual));
+  localStorage.setItem('diasEntrenados',        String(diasEntrenados));
+  localStorage.setItem('diasEntrenadosSemana',  String(diasEntrenadosSemana));
+  localStorage.setItem('racha',                 String(rachaActual));
+  localStorage.setItem('ultimoEntrenamiento',   ultimoEntrenamiento || '');
+  localStorage.setItem('historialPeso',         JSON.stringify(historialPeso));
+  localStorage.setItem('perfil',                JSON.stringify(perfil));
 }
 
 function calcularRutina() {
@@ -67,28 +71,17 @@ function calcularRutina() {
   var edad   = parseFloat(document.getElementById('edad').value);
   var sexo   = document.getElementById('sexo').value;
 
-  if (!peso || !altura || !edad) {
-    alert('Por favor rellena todos los campos');
-    return;
-  }
+  if (!peso || !altura || !edad) { alert('Por favor rellena todos los campos'); return; }
 
-  var imc = peso / ((altura / 100) * (altura / 100));
-  imc = Math.round(imc * 10) / 10;
+  var imc = Math.round((peso / Math.pow(altura / 100, 2)) * 10) / 10;
+  var numEjercicios = imc < 25 ? 3 : imc < 30 ? 4 : imc < 35 ? 5 : 6;
 
-  var numEjercicios;
-  if (imc < 25)      { numEjercicios = 3; }
-  else if (imc < 30) { numEjercicios = 4; }
-  else if (imc < 35) { numEjercicios = 5; }
-  else               { numEjercicios = 6; }
-
-  perfil = { peso: peso, altura: altura, edad: edad, sexo: sexo, imc: imc, numEjercicios: numEjercicios };
-  localStorage.setItem('perfil', JSON.stringify(perfil));
-  localStorage.setItem('semana', '1');
+  perfil = { peso, altura, edad, sexo, imc, numEjercicios };
   semanaActual = 1;
+  diasEntrenadosSemana = 0;
 
-  historialPeso.push({ semana: 1, peso: peso, fecha: new Date().toLocaleDateString('es-ES') });
-  localStorage.setItem('historialPeso', JSON.stringify(historialPeso));
-
+  historialPeso.push({ semana: 1, peso, fecha: new Date().toLocaleDateString('es-ES') });
+  guardarDatos();
   irA('menu');
 }
 
@@ -98,36 +91,28 @@ function cargarMenu() {
   var estado = imc < 18.5 ? 'Bajo peso' : imc < 25 ? 'Peso normal' : imc < 30 ? 'Sobrepeso' : 'Obesidad';
   document.getElementById('saludo').textContent = 'IMC: ' + imc + ' — ' + estado;
   document.getElementById('resumen-imc').textContent = 'Semana ' + semanaActual;
-  document.getElementById('resumen-rutina').textContent = calcularNumEjercicios() + ' ejercicios hoy';
   document.getElementById('racha-numero').textContent = rachaActual;
+  document.getElementById('resumen-rutina').textContent =
+    'Esta semana: ' + diasEntrenadosSemana + '/5 días · ' + calcularNumEjercicios() + ' ejercicios hoy';
 }
 
 function calcularNumEjercicios() {
-  var base = perfil.numEjercicios;
-  var extra = Math.floor((semanaActual - 1) / 2);
-  return Math.min(base + extra, todosEjercicios.length);
+  return Math.min(perfil.numEjercicios + Math.floor((semanaActual - 1) / 2), todosEjercicios.length);
 }
 
 function calcularReps(repsBase) {
-  var extra = Math.floor((semanaActual - 1) / 2);
-  return repsBase + (extra * 2);
+  return repsBase + Math.floor((semanaActual - 1) / 2) * 2;
 }
 
 function calcularSegundos(segundosBase) {
-  var extra = Math.floor((semanaActual - 1) / 2);
-  return Math.min(segundosBase + (extra * 5), 90);
+  return Math.min(segundosBase + Math.floor((semanaActual - 1) / 2) * 5, 90);
 }
 
 function iniciarEntrenamiento() {
   if (!perfil) { irA('datos'); return; }
-  
-  // Desbloquear audio en Safari con gesto del usuario
   var musica = document.getElementById('musica');
   musica.load();
-  musica.play().then(function() { 
-    musica.pause(); 
-    musica.currentTime = 0; 
-  }).catch(function() {});
+  musica.play().then(function() { musica.pause(); musica.currentTime = 0; }).catch(function() {});
 
   var num = calcularNumEjercicios();
   ejerciciosHoy = todosEjercicios.slice(0, num);
@@ -135,10 +120,8 @@ function iniciarEntrenamiento() {
   iniciarEjercicio(0);
 }
 
-
-
 function iniciarEjercicio(index) {
-  entrenamientoActivo = true;   // ← CLAVE
+  entrenamientoActivo = true;
   ejercicioActual = index;
   enPausa = false;
   var e = ejerciciosHoy[index];
@@ -149,25 +132,19 @@ function iniciarEjercicio(index) {
   document.getElementById('musculo-ejercicio').textContent = e.musculo;
   document.getElementById('gif-ejercicio').src = e.gif;
   document.getElementById('contador').style.color = '#e94560';
-
-  if (e.reps > 0) {
-    document.getElementById('reps-ejercicio').textContent = reps + ' repeticiones — ' + segundos + 's';
-  } else {
-    document.getElementById('reps-ejercicio').textContent = 'Aguanta ' + segundos + ' segundos';
-  }
-
+  document.getElementById('reps-ejercicio').textContent = e.reps > 0
+    ? reps + ' repeticiones — ' + segundos + 's'
+    : 'Aguanta ' + segundos + ' segundos';
   document.getElementById('estado-contador').textContent =
     'Ejercicio ' + (index + 1) + ' de ' + ejerciciosHoy.length;
 
   irA('ejercicio-activo');
-  cuentaAtrasPrevia(3, function() {
-    empezarTemporizador(segundos);
-  });
+  cuentaAtrasPrevia(3, function() { empezarTemporizador(segundos); });
 }
 
 function cuentaAtrasPrevia(n, callback) {
-  if (!entrenamientoActivo) return;   // ← CLAVE
-  document.getElementById('estado-contador').textContent = 'Preparate...';
+  if (!entrenamientoActivo) return;
+  document.getElementById('estado-contador').textContent = 'Prepárate...';
   document.getElementById('contador').style.color = '#ff9900';
   document.getElementById('contador').textContent = n;
   sonidoCuenta();
@@ -176,7 +153,7 @@ function cuentaAtrasPrevia(n, callback) {
     setTimeout(function() { cuentaAtrasPrevia(n - 1, callback); }, 1000);
   } else {
     setTimeout(function() {
-      if (!entrenamientoActivo) return;   // ← CLAVE
+      if (!entrenamientoActivo) return;
       sonidoInicio();
       document.getElementById('estado-contador').textContent =
         'Ejercicio ' + (ejercicioActual + 1) + ' de ' + ejerciciosHoy.length;
@@ -186,25 +163,22 @@ function cuentaAtrasPrevia(n, callback) {
 }
 
 function empezarTemporizador(segundos) {
-  if (!entrenamientoActivo) return;   // ← CLAVE
+  if (!entrenamientoActivo) return;
   tiempoRestante = segundos;
   document.getElementById('contador').style.color = '#e94560';
   document.getElementById('contador').textContent = tiempoRestante;
-  var musica = document.getElementById('musica');
-  musica.play().catch(function() {});
+  document.getElementById('musica').play().catch(function() {});
 
   clearInterval(intervalo);
   intervalo = setInterval(function() {
-    if (!entrenamientoActivo) { clearInterval(intervalo); return; }   // ← CLAVE
+    if (!entrenamientoActivo) { clearInterval(intervalo); return; }
     tiempoRestante--;
     document.getElementById('contador').textContent = tiempoRestante;
 
     if (tiempoRestante <= 3 && tiempoRestante > 0) {
       beep(880, 0.15, 0.09);
-      beep(660, 0.15, 0.09);
       document.getElementById('contador').style.color = '#ff9900';
     }
-
     if (tiempoRestante <= 0) {
       clearInterval(intervalo);
       sonidoFin();
@@ -215,9 +189,9 @@ function empezarTemporizador(segundos) {
 }
 
 function iniciarPausa() {
-  if (!entrenamientoActivo) return;   // ← CLAVE
+  if (!entrenamientoActivo) return;
   enPausa = true;
-  tiempoRestante = 25;
+  tiempoRestante = 30; // ← 30 segundos de pausa
 
   document.getElementById('nombre-ejercicio').textContent = '';
   document.getElementById('musculo-ejercicio').textContent = '';
@@ -229,7 +203,7 @@ function iniciarPausa() {
 
   clearInterval(intervalo);
   intervalo = setInterval(function() {
-    if (!entrenamientoActivo) { clearInterval(intervalo); return; }   // ← CLAVE
+    if (!entrenamientoActivo) { clearInterval(intervalo); return; }
     tiempoRestante--;
     document.getElementById('contador').textContent = tiempoRestante;
 
@@ -237,7 +211,6 @@ function iniciarPausa() {
       sonidoCuenta();
       document.getElementById('contador').style.color = '#ff9900';
     }
-
     if (tiempoRestante <= 0) {
       clearInterval(intervalo);
       if (ejercicioActual + 1 < ejerciciosHoy.length) {
@@ -250,28 +223,18 @@ function iniciarPausa() {
 }
 
 function finalizarEntrenamiento() {
-  entrenamientoActivo = false;
-  var hoy = new Date().toLocaleDateString('es-ES');
-  if (ultimoEntrenamiento !== hoy) {
-    diasEntrenados++;
-    var ayer = new Date();
-    ayer.setDate(ayer.getDate() - 1);
-    var ayerStr = ayer.toLocaleDateString('es-ES');
-    if (ultimoEntrenamiento === ayerStr) {
-      rachaActual++;
-    } else {
-      rachaActual = 1;
-    }
-    ultimoEntrenamiento = hoy;
-    localStorage.setItem('diasEntrenados', diasEntrenados.toString());
-    localStorage.setItem('racha', rachaActual.toString());
-    localStorage.setItem('ultimoEntrenamiento', hoy);
+  diasEntrenados++;
+  diasEntrenadosSemana++;
+  rachaActual++;
+  ultimoEntrenamiento = new Date().toDateString();
+
+  if (diasEntrenadosSemana >= 5) {
+    semanaActual++;
+    diasEntrenadosSemana = 0;
+    alert('🎉 ¡Semana ' + (semanaActual - 1) + ' completada! Empiezas la semana ' + semanaActual);
   }
 
-  semanaActual++;
-  localStorage.setItem('semana', semanaActual.toString());
-  sonidoInicio();
-  alert('Entrenamiento completado! Semana ' + semanaActual + ' desbloqueada! Racha: ' + rachaActual + ' dias');
+  guardarDatos();
   irA('menu');
 }
 
@@ -284,11 +247,10 @@ function guardarPeso() {
     peso: nuevoPeso,
     fecha: new Date().toLocaleDateString('es-ES')
   });
-  localStorage.setItem('historialPeso', JSON.stringify(historialPeso));
 
   perfil.peso = nuevoPeso;
-  perfil.imc = Math.round((nuevoPeso / ((perfil.altura / 100) * (perfil.altura / 100))) * 10) / 10;
-  localStorage.setItem('perfil', JSON.stringify(perfil));
+  perfil.imc = Math.round((nuevoPeso / Math.pow(perfil.altura / 100, 2)) * 10) / 10;
+  guardarDatos();
 
   alert('Peso guardado: ' + nuevoPeso + ' kg — Nuevo IMC: ' + perfil.imc);
   irA('menu');
@@ -303,22 +265,22 @@ function cargarProgreso() {
 
   var lista = document.getElementById('historial-peso');
   lista.innerHTML = '';
-  historialPeso.forEach(function(entry) {
-    var li = document.createElement('li');
-    li.innerHTML = '<span style="color:#e94560">Semana ' + entry.semana + '</span> — ' +
-      entry.peso + ' kg <span style="color:#aaa; font-size:0.85rem">(' + entry.fecha + ')</span>';
-    lista.appendChild(li);
-  });
-
   if (historialPeso.length === 0) {
     var li = document.createElement('li');
-    li.textContent = 'Aun no hay registros de peso';
+    li.textContent = 'Aún no hay registros de peso';
     lista.appendChild(li);
+  } else {
+    historialPeso.forEach(function(entry) {
+      var li = document.createElement('li');
+      li.innerHTML = '<span style="color:#e94560">Semana ' + entry.semana + '</span> — ' +
+        entry.peso + ' kg <span style="color:#aaa; font-size:0.85rem">(' + entry.fecha + ')</span>';
+      lista.appendChild(li);
+    });
   }
 }
 
 function pararEjercicio() {
-  entrenamientoActivo = false;   // ← CLAVE
+  entrenamientoActivo = false;
   clearInterval(intervalo);
   intervalo = null;
   var musica = document.getElementById('musica');
@@ -328,7 +290,7 @@ function pararEjercicio() {
 }
 
 function siguienteEjercicio() {
-  entrenamientoActivo = false;   // ← CLAVE — mata todos los setTimeout pendientes
+  entrenamientoActivo = false;
   clearInterval(intervalo);
   intervalo = null;
   var musica = document.getElementById('musica');
@@ -340,12 +302,14 @@ function siguienteEjercicio() {
     finalizarEntrenamiento();
   }
 }
+
 function resetearApp() {
   if (confirm('¿Seguro? Se borrarán todos los datos')) {
     localStorage.clear();
     perfil = null;
     semanaActual = 1;
     diasEntrenados = 0;
+    diasEntrenadosSemana = 0;
     rachaActual = 0;
     ultimoEntrenamiento = null;
     historialPeso = [];
@@ -362,7 +326,3 @@ if ('serviceWorker' in navigator) {
 window.onload = function() {
   if (perfil) { irA('menu'); }
 };
-
-
-
-
