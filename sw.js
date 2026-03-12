@@ -1,4 +1,4 @@
-var CACHE = 'ejercicios-v4';
+var CACHE = 'ejercicios-v5';
 var ARCHIVOS = [
   './',
   './index.html',
