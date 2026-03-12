@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+ HEAD
 var perfil = JSON.parse(localStorage.getItem('perfil')) || null;
 var semanaActual = parseInt(localStorage.getItem('semana')) || 1;
 var diasEntrenados = parseInt(localStorage.getItem('diasEntrenados')) || 0;
@@ -449,7 +449,7 @@ function resetearApp() {
 window.onload = function() {
   if (perfil) { irA('menu'); }
 };
-=======
+
 var perfil = JSON.parse(localStorage.getItem('perfil')) || null;
 var semanaActual = parseInt(localStorage.getItem('semana')) || 1;
 var diasEntrenados = parseInt(localStorage.getItem('diasEntrenados')) || 0;
@@ -778,4 +778,4 @@ if ('serviceWorker' in navigator) {
 window.onload = function() {
   if (perfil) { irA('menu'); }
 };
->>>>>>> f056b705b7c532dd59454d26ccd8a1eb28102f4b
+
