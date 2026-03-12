@@ -1,4 +1,4 @@
- HEAD
+
 var perfil = JSON.parse(localStorage.getItem('perfil')) || null;
 var semanaActual = parseInt(localStorage.getItem('semana')) || 1;
 var diasEntrenados = parseInt(localStorage.getItem('diasEntrenados')) || 0;
