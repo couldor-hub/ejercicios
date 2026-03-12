@@ -19,7 +19,6 @@ var ARCHIVOS = [
   './imagenes/icon-192.png',
   './imagenes/icon-512.png'
 ];
-var CACHE_NAME = 'fitapp-v2'; // ← súbele el número cada vez que cambies algo
 
 self.addEventListener('install', function(e) {
   e.waitUntil(
@@ -27,6 +26,18 @@ self.addEventListener('install', function(e) {
       return cache.addAll(ARCHIVOS);
     })
   );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', function(e) {
+  e.waitUntil(
+    caches.keys().then(function(names) {
+      return Promise.all(
+        names.filter(n => n !== CACHE).map(n => caches.delete(n))
+      );
+    })
+  );
+  self.clients.claim();
 });
 
 self.addEventListener('fetch', function(e) {
