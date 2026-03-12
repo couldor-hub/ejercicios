@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -87,7 +86,6 @@
       <button class="btn-ghost" onclick="resetearApp()">🗑️ Resetear app</button>
       <button class="btn-secundario" onclick="irA('seleccionar-ejercicios')">✅ Elegir ejercicios</button>
     </div>
-
   </div>
 
   <!-- EJERCICIO ACTIVO -->
@@ -152,167 +150,18 @@
   </div>
 
   <!-- SELECCIONAR EJERCICIOS -->
-<div class="pantalla oculto" id="seleccionar-ejercicios">
-  <div class="cabecera">
-    <button class="btn-back" onclick="irA('menu')">‹</button>
-    <h2>Elige ejercicios</h2>
-  </div>
-  <p class="subtitulo-seccion">Selecciona los que quieres hacer hoy</p>
-  <div id="lista-seleccion" class="lista-seleccion"></div>
-  <div style="position:sticky; bottom:0; padding:16px 0; background:#0a0e1a;">
-    <button class="btn-primario btn-entrenar" onclick="iniciarSeleccionados()">🏋️ Entrenar seleccionados</button>
-  </div>
-</div>
-
-
-  <script src="app.js"></script>
-</body>
-</html>
-=======
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ejercicios</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-</head>
-<body>
-
-  <!-- INICIO -->
-  <div class="pantalla" id="inicio">
-    <div class="inicio-bg"></div>
-    <div class="inicio-content">
-      <div class="logo-icon">💪</div>
-      <h1 class="titulo-app">Ejercicios</h1>
-      <p class="subtitulo">Tu entrenador personal</p>
-      <button class="btn-primario btn-grande" onclick="irA('datos')">Empezar ahora</button>
-    </div>
-  </div>
-
-  <!-- DATOS -->
-  <div class="pantalla oculto" id="datos">
+  <div class="pantalla oculto" id="seleccionar-ejercicios">
     <div class="cabecera">
       <button class="btn-back" onclick="irA('menu')">‹</button>
-      <h2>Tus datos</h2>
+      <h2>Elige ejercicios</h2>
     </div>
-    <p class="subtitulo-seccion">Para calcular tu rutina ideal</p>
-    <div class="form-group">
-      <label>Peso actual (kg)</label>
-      <input type="number" id="peso" placeholder="Ej: 85" min="30" max="300">
+    <p class="subtitulo-seccion">Selecciona los que quieres hacer hoy</p>
+    <div id="lista-seleccion" class="lista-seleccion"></div>
+    <div style="position:sticky; bottom:0; padding:16px 0; background:#0a0e1a;">
+      <button class="btn-primario btn-entrenar" onclick="iniciarSeleccionados()">🏋️ Entrenar seleccionados</button>
     </div>
-    <div class="form-group">
-      <label>Altura (cm)</label>
-      <input type="number" id="altura" placeholder="Ej: 175" min="100" max="250">
-    </div>
-    <div class="form-group">
-      <label>Edad</label>
-      <input type="number" id="edad" placeholder="Ej: 35" min="10" max="100">
-    </div>
-    <div class="form-group">
-      <label>Sexo</label>
-      <select id="sexo">
-        <option value="hombre">Hombre</option>
-        <option value="mujer">Mujer</option>
-      </select>
-    </div>
-    <button class="btn-primario" onclick="calcularRutina()">Calcular mi rutina</button>
-  </div>
-
-  <!-- MENU -->
-  <div class="pantalla oculto" id="menu">
-    <div class="menu-header">
-      <div class="menu-logo">💪</div>
-      <div>
-        <p id="saludo" class="menu-imc"></p>
-        <p id="resumen-imc" class="menu-semana"></p>
-      </div>
-    </div>
-
-    <div class="racha-banner">
-      <span class="racha-fuego">🔥</span>
-      <span id="racha-numero" class="racha-num">0</span>
-      <span class="racha-texto">días seguidos</span>
-    </div>
-
-    <div class="info-card">
-      <span class="info-label">Hoy entrenas</span>
-      <span id="resumen-rutina" class="info-valor"></span>
-    </div>
-
-    <div class="menu-botones">
-      <button class="btn-primario btn-entrenar" onclick="iniciarEntrenamiento()">🏋️ Entrenar hoy</button>
-      <button class="btn-secundario" onclick="irA('progreso')">📈 Mi progreso</button>
-      <button class="btn-secundario" onclick="irA('peso-semana')">⚖️ Actualizar peso</button>
-     <button class="btn-ghost" onclick="resetearApp()">🗑️ Resetear app</button>
-    </div>
-  </div>
-
-  <!-- EJERCICIO ACTIVO -->
-  <div class="pantalla oculto" id="ejercicio-activo">
-    <div class="ejercicio-top">
-      <span id="estado-contador" class="estado-label"></span>
-      <span id="musculo-ejercicio" class="musculo-badge"></span>
-    </div>
-    <h2 id="nombre-ejercicio" class="nombre-ejercicio"></h2>
-    <div class="gif-wrapper">
-      <img id="gif-ejercicio" src="" alt="">
-    </div>
-    <div id="contador" class="contador-grande">60</div>
-    <p id="reps-ejercicio" class="reps-texto"></p>
-    <div class="ejercicio-botones">
-      <button class="btn-parar" onclick="pararEjercicio()">⏹ Parar</button>
-      <button class="btn-siguiente" onclick="siguienteEjercicio()">⏭ Siguiente</button>
-    </div>
-    <audio id="musica" src="musica.mp3" loop></audio>
-  </div>
-
-  <!-- PROGRESO -->
-  <div class="pantalla oculto" id="progreso">
-    <div class="cabecera">
-      <button class="btn-back" onclick="irA('menu')">‹</button>
-      <h2>Mi progreso</h2>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <p class="stat-label">Semana</p>
-        <p id="progreso-semana" class="stat-valor"></p>
-      </div>
-      <div class="stat-card">
-        <p class="stat-label">IMC</p>
-        <p id="progreso-imc" class="stat-valor"></p>
-      </div>
-      <div class="stat-card">
-        <p class="stat-label">Días</p>
-        <p id="progreso-dias" class="stat-valor"></p>
-      </div>
-      <div class="stat-card">
-        <p class="stat-label">Racha</p>
-        <p id="progreso-racha" class="stat-valor"></p>
-      </div>
-    </div>
-    <h3 class="historial-titulo">Historial de peso</h3>
-    <ul id="historial-peso" class="historial-lista"></ul>
-  </div>
-
-  <!-- PESO SEMANA -->
-  <div class="pantalla oculto" id="peso-semana">
-    <div class="cabecera">
-      <button class="btn-back" onclick="irA('menu')">‹</button>
-      <h2>Actualizar peso</h2>
-    </div>
-    <p class="subtitulo-seccion">Registra tu peso de esta semana</p>
-    <div class="form-group">
-      <label>Peso actual (kg)</label>
-      <input type="number" id="nuevo-peso" placeholder="Ej: 83.5" min="30" max="300">
-    </div>
-    <button class="btn-primario" onclick="guardarPeso()">Guardar</button>
   </div>
 
   <script src="app.js"></script>
 </body>
 </html>
-
->>>>>>> f056b705b7c532dd59454d26ccd8a1eb28102f4b
