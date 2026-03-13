@@ -42,6 +42,26 @@ var ejerciciosEstiramientos = [
   { nombre: "Estiramiento Lumbar",   musculo: "Espalda", gif: "imagenes/Estiramiento-Lumbar.jpg",   reps: 0,  segundosBase: 40, calorias: 1 }
 ];
 
+var circuitoAbdomen = [
+  { nombre: "Crunch Abdominal",    musculo: "Core", gif: "imagenes/Crunch-Abdominal.gif",    reps: 0, segundosBase: 40, calorias: 5 },
+  { nombre: "Abdominales Piernas", musculo: "Core", gif: "imagenes/Abdominales-Piernas.gif", reps: 0, segundosBase: 30, calorias: 5 },
+  { nombre: "Abdominales Rodilla", musculo: "Core", gif: "imagenes/Abdominales-Rodilla.jpg", reps: 0, segundosBase: 20, calorias: 4 },
+  { nombre: "Abdominales Tobillo", musculo: "Core", gif: "imagenes/Abdominales-Tobillo.jpg", reps: 0, segundosBase: 10, calorias: 3 },
+];
+
+var serieCircuito = 0;
+var totalSeriesCircuito = 3;
+
+function iniciarCircuitoAbdomen() {
+  if (!perfil) { irA('datos'); return; }
+  serieCircuito = 1;
+  ejerciciosHoy = circuitoAbdomen.slice();
+  ejercicioActual = 0;
+  document.getElementById('estado-contador').textContent = 'Serie ' + serieCircuito + ' de ' + totalSeriesCircuito;
+  iniciarEjercicio(0);
+}
+
+
 var ejerciciosHoy = [];
 var ejercicioActual = 0;
 var intervalo = null;
@@ -300,6 +320,40 @@ function iniciarPausa() {
 }
 
 function finalizarEntrenamiento() {
+  // Si es circuito y quedan series
+  if (serieCircuito > 0 && serieCircuito < totalSeriesCircuito) {
+    serieCircuito++;
+    ejerciciosHoy = circuitoAbdomen.slice();
+    ejercicioActual = 0;
+    // Descanso entre series de 30s
+    enPausa = true;
+    tiempoRestante = 30;
+    document.getElementById('nombre-ejercicio').textContent = '';
+    document.getElementById('musculo-ejercicio').textContent = '';
+    document.getElementById('gif-ejercicio').src = '';
+    document.getElementById('reps-ejercicio').textContent = '';
+    document.getElementById('estado-contador').textContent = '💪 Serie ' + serieCircuito + ' en breve...';
+    document.getElementById('contador').style.color = '#44cc88';
+    document.getElementById('contador').textContent = tiempoRestante;
+    irA('ejercicio-activo');
+    clearInterval(intervalo);
+    intervalo = setInterval(function() {
+      tiempoRestante--;
+      document.getElementById('contador').textContent = tiempoRestante;
+      if (tiempoRestante <= 3 && tiempoRestante > 0) {
+        sonidoCuenta();
+        document.getElementById('contador').style.color = '#ff9900';
+      }
+      if (tiempoRestante <= 0) {
+        clearInterval(intervalo);
+        iniciarEjercicio(0);
+      }
+    }, 1000);
+    return;
+  }
+
+  // Entrenamiento normal o última serie del circuito
+  serieCircuito = 0;
   diasEntrenados++;
   diasEntrenadosSemana++;
   rachaActual++;
@@ -312,6 +366,7 @@ function finalizarEntrenamiento() {
   guardarDatos();
   irA('menu');
 }
+
 
 function guardarPeso() {
   var nuevoPeso = parseFloat(document.getElementById('nuevo-peso').value);
