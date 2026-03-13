@@ -241,13 +241,23 @@ function iniciarEjercicio(index) {
     : 'Aguanta ' + segundos + ' segundos';
   document.getElementById('estado-contador').textContent =
     'Ejercicio ' + (index + 1) + ' de ' + ejerciciosHoy.length;
-  irA('ejercicio-activo');
-  cuentaAtrasPrevia(3, function() { empezarTemporizador(segundos); });
+  irA('ejercicio-activo'); // ← ya estaba aquí, el GIF se ve desde el inicio
+  cuentaAtrasPrevia(5, function() { empezarTemporizador(segundos); }); // ← solo cambia 3 por 5
 }
+
 
 function cuentaAtrasPrevia(n, callback) {
   if (!entrenamientoActivo) return;
-  document.getElementById('estado-contador').textContent = 'Prepárate...';
+  
+  // Pausar música solo al inicio de la cuenta (n === 5)
+  if (n === 5) {
+    var musica = document.getElementById('musica');
+    musica.pause();
+    musica.currentTime = 0;
+  }
+
+  var e = ejerciciosHoy[ejercicioActual];
+  document.getElementById('estado-contador').textContent = '¡Prepárate! — ' + e.nombre;
   document.getElementById('contador').style.color = '#ff9900';
   document.getElementById('contador').textContent = n;
   sonidoCuenta();
@@ -263,6 +273,8 @@ function cuentaAtrasPrevia(n, callback) {
     }, 1000);
   }
 }
+
+
 
 function empezarTemporizador(segundos) {
   if (!entrenamientoActivo) return;
