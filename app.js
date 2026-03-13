@@ -45,8 +45,8 @@ var ejerciciosEstiramientos = [
 var circuitoAbdomen = [
   { nombre: "Crunch Abdominal",    musculo: "Core", gif: "imagenes/Crunch-Abdominal.gif",    reps: 0, segundosBase: 40, calorias: 5 },
   { nombre: "Abdominales Piernas", musculo: "Core", gif: "imagenes/Abdominales-Piernas.gif", reps: 0, segundosBase: 30, calorias: 5 },
-  { nombre: "Abdominales Rodilla", musculo: "Core", gif: "imagenes/Abdominales-Rodilla.jpg", reps: 0, segundosBase: 20, calorias: 4 },
-  { nombre: "Abdominales Tobillo", musculo: "Core", gif: "imagenes/Abdominales-Tobillo.jpg", reps: 0, segundosBase: 10, calorias: 3 },
+  { nombre: "Abdominales Rodilla", musculo: "Core", gif: "imagenes/Abdominales-Rodilla.gif", reps: 0, segundosBase: 20, calorias: 4 },
+  { nombre: "Abdominales Tobillo", musculo: "Core", gif: "imagenes/Abdominales-Tobillo.gif", reps: 0, segundosBase: 10, calorias: 3 },
 ];
 
 var serieCircuito = 0;
